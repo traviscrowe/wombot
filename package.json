@@ -1,0 +1,19 @@
+{
+  "name": "stb",
+  "version": "1.0.0",
+  "description": "A topical discord bot for friends",
+  "main": "bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node bot.js",
+    "lint": "eslint ./"
+  },
+  "author": "Travis Crowe",
+  "license": "ISC",
+  "dependencies": {
+    "discord.js": "^11.2.1"
+  },
+  "devDependencies": {
+    "eslint": "^4.10.0"
+  }
+}
