@@ -33,7 +33,7 @@ client.on('message', msg => {
         }
     }
 
-    if (msg.channel.name === 'board-games' || msg.channel.name === 'wombot-testing') {
+    if (msg.channel.name === 'board-gaming' || msg.channel.name === 'wombot-testing') {
         let games = msg.content.match(/\{\{(.*?)\}\}/g);
         if (games) {
             games.forEach(game => {
