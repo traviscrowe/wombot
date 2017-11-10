@@ -33,7 +33,7 @@ client.on('message', msg => {
         }
     }
 
-    if (msg.channel.name === 'wombot') {
+    if (msg.channel.name === 'board-games') {
         let games = msg.content.match(/\{\{(.*?)\}\}/g);
         if (games) {
             console.log(games);
@@ -44,7 +44,9 @@ client.on('message', msg => {
                 msg.channel.send(`https://www.boardgamegeek.com/geeksearch.php?action=search&objecttype=boardgame&q=${formatted}`)
             });
         }
+    }
 
+    if (msg.channel.name === 'wombot') {
         if (msg.content === '{{health}}') {
             msg.channel.send('yes, i\'m alive');
         }
