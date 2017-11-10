@@ -7,7 +7,7 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 
 client.on('ready', () => {
-    client.channels.find('name', 'wombot-testing').send('*wombat noises* [wombat started]');
+    client.channels.find('name', 'wombot-testing').send('*wombat noises* [wombot started]');
 });
 
 client.on('message', (msg) => {
@@ -38,7 +38,7 @@ client.on('message', (msg) => {
         }
     }
 
-    if (msg.channel.name === 'wombot-testing') {
+    if (msg.channel.name === 'board-games' || msg.channel.name === 'wombot-testing') {
         const games = msg.content.match(/\{\{(.*?)\}\}/g);
         if (games) {
             games.forEach((game) => {
