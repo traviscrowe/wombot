@@ -1,5 +1,7 @@
 const config = require('./config.json');
 const util = require('./util.js');
+const request = require('request');
+const xmlParser = require('xml2js').parseString;
 const Discord = require('discord.js');
 
 const client = new Discord.Client();
@@ -36,14 +38,32 @@ client.on('message', (msg) => {
         }
     }
 
-    if (msg.channel.name === 'board-games' || msg.channel.name === 'wombot-testing') {
+    if (msg.channel.name === 'wombot-testing') {
         const games = msg.content.match(/\{\{(.*?)\}\}/g);
         if (games) {
             games.forEach((game) => {
-                const bggQuery = util.encodeForQs(game
-                    .replace('{{', '')
-                    .replace('}}', ''));
-                msg.channel.send(`https://www.boardgamegeek.com/geeksearch.php?action=search&objecttype=boardgame&q=${bggQuery}`);
+                const options = {
+                    url: `https://www.boardgamegeek.com/xmlapi2/search?type=boardgame&query=${game}`,
+                    headers: {
+                        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8',
+                    },
+                };
+                request(options, (error, response, body) => {
+                    if (error) {
+                        msg.channel.send('sorry, something is fucked');
+                    }
+                    return xmlParser(body, (err, result) => {
+                        if (err) {
+                            msg.channel.send('sorry, something is fucked');
+                        }
+                        if (parseInt(result.items.$.total, 10) > 0) {
+                            const bestResult = result.items.item[0];
+                            msg.channel.send(`\`${bestResult.name[0].$.value} [${bestResult.yearpublished[0].$.value}]\`\nhttps://www.boardgamegeek.com/boardgame/${bestResult.$.id}`);
+                        } else {
+                            msg.channel.send('no results!');
+                        }
+                    });
+                });
             });
         }
     }

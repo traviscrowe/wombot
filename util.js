@@ -3,6 +3,7 @@ function encodeForQs(str) {
         .toLowerCase();
 }
 
+
 module.exports = {
     encodeForQs,
 };
