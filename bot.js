@@ -1,59 +1,59 @@
-let config = require('./config.json');
+const config = require('./config.json');
+const util = require('./util.js');
 const Discord = require('discord.js');
+
 const client = new Discord.Client();
 
 client.on('ready', () => {
     client.channels.find('name', 'wombot-testing').send('*wombat noises* [wombat started]');
 });
 
-client.on('message', msg => {
+client.on('message', (msg) => {
     if (msg.author.bot) return;
 
 
-    let subsReddits = msg.content.match(/([/][r][/]\w+)/g);
+    const subsReddits = msg.content.match(/([/][r][/]\w+)/g);
     if (subsReddits && !msg.content.includes('reddit.com/r/')) {
-        subsReddits.forEach(slashR => {
+        subsReddits.forEach((slashR) => {
             msg.channel.send(`https://reddit.com${slashR}`);
         });
     }
 
     if (msg.channel.name === 'happy-hour' || msg.channel.name === 'wombot-testing') {
         if (msg.content.substring(0, 5) === '🍻 @ ') {
-            const mapsQuery = msg.content.substring(5, msg.content.length).replace(' ', '+');
-            msg.channel.send(`https://maps.google.com/?q=${mapsQuery.toLowerCase()}+appleton+wi`);
+            const mapsQuery = util.encodeForQs(msg.content.substring(5, msg.content.length));
+            msg.channel.send(`https://maps.google.com/?q=${mapsQuery}`);
         }
     }
 
     if (msg.channel.name === 'wallstreetbets' || msg.channel.name === 'wombot-testing') {
-        let tickers = msg.content.match(/(?:\$)(\w+)/g);
+        const tickers = msg.content.match(/(?:\$)(\w+)/g);
         if (tickers) {
-            tickers.forEach(ticker => {
-                msg.channel.send(`https://finance.google.com/finance/getchart?q=${ticker.replace('$', '')}`);
+            tickers.forEach((ticker) => {
+                const tickerQuery = util.encodeForQs(ticker.replace('$', ''));
+                msg.channel.send(`https://finance.google.com/finance/getchart?q=${tickerQuery}`);
             });
         }
     }
 
-    if (msg.channel.name === 'board-gaming' || msg.channel.name === 'wombot-testing') {
-        let games = msg.content.match(/\{\{(.*?)\}\}/g);
+    if (msg.channel.name === 'board-games' || msg.channel.name === 'wombot-testing') {
+        const games = msg.content.match(/\{\{(.*?)\}\}/g);
         if (games) {
-            games.forEach(game => {
-                // i'm too fucking tired to deal with regex right now
-                let formatted = game.
-                    replace('{{', '').
-                    replace('}}', '').
-                    replace(/\s/g, '+').
-                    toLowerCase();
-                msg.channel.send(`https://www.boardgamegeek.com/geeksearch.php?action=search&objecttype=boardgame&q=${formatted}`);
+            games.forEach((game) => {
+                const bggQuery = util.encodeForQs(game
+                    .replace('{{', '')
+                    .replace('}}', ''));
+                msg.channel.send(`https://www.boardgamegeek.com/geeksearch.php?action=search&objecttype=boardgame&q=${bggQuery}`);
             });
         }
     }
 
     if (msg.channel.name === 'wombot' || msg.channel.name === 'wombot-testing') {
-        if (msg.content === '{{health}}') {
+        if (msg.content === 'wb.health') {
             msg.channel.send('yes, i\'m alive');
         }
 
-        if (msg.content === '{{docs}}') {
+        if (msg.content === 'wb.docs') {
             msg.channel.send('```womdocs:\n\n' +
                         'global:\n\n' +
                         '    - messages with subreddit references (\'/r/\') will be responded to with a link to the subreddit\n\n' +

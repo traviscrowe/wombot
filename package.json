@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node bot.js",
-    "lint": "eslint ./"
+    "lint": "eslint ./",
+    "lint:fix": "eslint --fix ./"
   },
   "author": "Travis Crowe",
   "license": "ISC",
@@ -14,6 +15,8 @@
     "discord.js": "^11.2.1"
   },
   "devDependencies": {
-    "eslint": "^4.10.0"
+    "eslint": "^4.10.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0"
   }
 }
