@@ -13,7 +13,6 @@
   "license": "ISC",
   "dependencies": {
     "discord.js": "^11.2.1",
-    "https": "^1.0.0",
     "request": "^2.83.0",
     "xml2js": "^0.4.19"
   },
