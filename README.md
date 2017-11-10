@@ -9,3 +9,4 @@ requires a file called config.json with auth.token defined as a valid discord bo
 * Google Finance Tickers: jams tickers into Google Finance
 * BoardGameGeek: queries BGG with game titles tagged like {{Food Chain Magnate}}
 * Health Check: tells you if it's alive or not when you send {{health}} to #wombot
+* Docs: tells you how to interact with it when you send {{docs}} to #wombot
