@@ -4,7 +4,7 @@
   "description": "A topical discord bot for friends",
   "main": "bot.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "node bot.js",
     "lint": "eslint ./",
     "lint:fix": "eslint --fix ./"
@@ -17,8 +17,10 @@
     "xml2js": "^0.4.19"
   },
   "devDependencies": {
+    "chai": "^4.1.2",
     "eslint": "^4.10.0",
     "eslint-config-airbnb-base": "^12.1.0",
-    "eslint-plugin-import": "^2.8.0"
+    "eslint-plugin-import": "^2.8.0",
+    "mocha": "^4.0.1"
   }
 }
