@@ -13,6 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "beeradvocate-api": "^0.0.1",
+    "bgg": "^1.0.1",
     "discord.js": "^11.2.1",
     "request": "^2.83.0",
     "xml2js": "^0.4.19"
