@@ -1,10 +1,7 @@
 {
     "extends": "airbnb-base",
     "rules": {
-        "linebreak-style": ["off"],
-        "indent": ["error", 4],
-        "comma-dangle": ["error", "never"],
-        "max-len": ["error", 180],
-        "prefer-destructuring": ["off"]
+        "linebreak-style": ["error", "windows"],
+        "indent": ["error", 4]
     }
 }
