@@ -18,6 +18,21 @@ module.exports = {
                 const mapsQuery = util.encodeForQs(msg.content.substring(5, msg.content.length));
                 msg.channel.send(`https://maps.google.com/?q=${mapsQuery}`);
             }
+
+            const beerQuery = msg.content.match(/(?:\.beer )(\w.*)/);
+            if (beerQuery) {
+                var ba = require('beeradvocate-api');
+                var beerResult = '';
+                ba.beerSearch(beerQuery[1], function(beers) {
+                    var beersArray = JSON.parse(beers);
+                    for (var beer in beersArray) {
+                        var b = beersArray[beer];
+                        beerResult += b.beer_name + ' - ' + '<https://www.beeradvocate.com' + b.beer_url + '>' + '\n';
+                    };
+                    var safeBeerResult = beerResult.substring(0, 1999) //can only send 2000 char messages to discord
+                    msg.channel.send(safeBeerResult);
+                });
+            }
         }
 
         if (msg.channel.name === 'wallstreetbets' || msg.channel.name === 'wombot-testing') {
