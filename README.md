@@ -10,6 +10,7 @@ requires a file called config.json with auth.token defined as a valid discord bo
 * BoardGameGeek: queries BGG with game titles tagged like {{Food Chain Magnate}}
 * Health Check: tells you if it's alive or not when you send {{health}} to #wombot
 * Docs: tells you how to interact with it when you send {{docs}} to #wombot
+* Beer Search: searches beeradvocate.com for your cerveza: `.beer gone away`
 
 ## future state, maybe
 * allow users with certain access levels to add/remove commands from a given channel (config driven commands)
