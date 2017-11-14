@@ -5,5 +5,5 @@ function encodeForQs(str) {
 
 
 module.exports = {
-    encodeForQs
+    encodeForQs,
 };
