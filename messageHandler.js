@@ -2,10 +2,17 @@ const options = {};
 const util = require('./util.js');
 const bgg = require('bgg')(options);
 const ba = require('beeradvocate-api');
+const RedditHandler = require('./redditModule');
+const redditHandler = new RedditHandler();
 
 module.exports = {
+    init: (client) => {
+        redditHandler.init(client);
+    },
     handle: (msg) => {
         if (msg.author.bot) return;
+
+        redditHandler.handleMessage(msg);
 
         const subsReddits = msg.content.match(/([/][r][/]\w+)/g);
         if (subsReddits && !msg.content.includes('reddit.com/r/')) {
