@@ -115,7 +115,7 @@ class RedditClient {
         this.posts = {};
     }
     getHotPosts(subreddit, score = defaultScore) {
-        return r.getHot(subreddit, { limit: 100 })
+        return r.getHot(subreddit, { limit: 10 })
             .filter(x => x.score > score)
             .filter(x => !this.posts[x.id])
             .map(x => ({
