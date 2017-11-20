@@ -2,6 +2,15 @@
 
 ## a discord bot for degenerates
 requires a file called config.json with auth.token defined as a valid discord bot token
+The reddit-watcher requires a reddit section on the config
+```json
+  "reddit": {
+    "userAgent": "nodejs:wombot:v0.01 (by /u/yolan_tao)",
+    "clientId": "",
+    "clientSecret": "",
+    "refreshToken": ""
+  }```
+
 
 ## functions
 * Google Maps Query: helps you find bars for happy hour
@@ -11,6 +20,11 @@ requires a file called config.json with auth.token defined as a valid discord bo
 * Health Check: tells you if it's alive or not when you send {{health}} to #wombot
 * Docs: tells you how to interact with it when you send {{docs}} to #wombot
 * Beer Search: searches beeradvocate.com for your cerveza: `.beer gone away`
+* Subreddit Watcher: watches a specified subreddit and auto-posts when anything reaches specified score
+   * wb.addSub {subreddit} {score} (ws.addSub gaming 10000)
+   * wb.removeSub {subreddit}
+   * wb.listSubs
+
 
 ## future state, maybe
 * allow users with certain access levels to add/remove commands from a given channel (config driven commands)
