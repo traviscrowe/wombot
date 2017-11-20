@@ -5,7 +5,7 @@ const snoowrap = require('snoowrap');
 const r = new snoowrap(config.reddit);
 
 const defaultScore = 1000;
-const cron = '*/1 * * * *';
+const cron = '*/5 * * * *';
 const addSubRegex = /(?:\wb\.addSub\s)(\w+)(?:\s)(\w+)/i;
 const listSubsRegex = /(?:\wb\.listSubs)/i;
 const removeSubRegex = /(?:\wb\.removeSub\s)(\w+)/i;
