@@ -134,13 +134,10 @@ module.exports = {
                     '    - {{BoardGameTitle}} in messages will return a bunch of information about and a link to the best match of BoardGameTitle on BoardGameGeek\n\n' +
                     '#wallstreetbets:\n\n' +
                     '    - $XYZ in messages will return a Google Finance URL to fetch the daily chart of XYZ ticker\n\n' +
-<<<<<<< HEAD
-=======
                     '#subreddit-watcher: watches a specified subreddit and auto-posts when anything reaches specified score\n\n' +
                     '    - wb.addSub {subredditname} {score} (ws.addSub gaming 10000)\n' +
                     '    - wb.removeSub {subreddit}\n' + 
                     '    - wb.listSubs\n' + 
->>>>>>> b1cdb09c54653202a179609fcf2c6faaca2a9f53
                     'Questions? Submit a PR and fix it yourself at https://github.com/traviscrowe/wombat```');
             }
         }
