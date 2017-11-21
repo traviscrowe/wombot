@@ -7,8 +7,8 @@ const RedditHandler = require('./redditModule');
 const redditHandler = new RedditHandler();
 
 module.exports = {
-    init: (client) => {
-        redditHandler.init(client);
+    init: (client, persistance) => {
+        redditHandler.init(client, persistance);
     },
     handle: (msg) => {
         if (msg.author.bot) return;
