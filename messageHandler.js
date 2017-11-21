@@ -7,8 +7,8 @@ const RedditHandler = require('./redditModule');
 const redditHandler = new RedditHandler();
 
 module.exports = {
-    init: (client) => {
-        redditHandler.init(client);
+    init: (client, persistance) => {
+        redditHandler.init(client, persistance);
     },
     handle: (msg) => {
         if (msg.author.bot) return;
@@ -136,8 +136,8 @@ module.exports = {
                     '    - $XYZ in messages will return a Google Finance URL to fetch the daily chart of XYZ ticker\n\n' +
                     '#subreddit-watcher: watches a specified subreddit and auto-posts when anything reaches specified score\n\n' +
                     '    - wb.addSub {subredditname} {score} (ws.addSub gaming 10000)\n' +
-                    '    - wb.removeSub {subreddit}\n' + 
-                    '    - wb.listSubs\n' + 
+                    '    - wb.removeSub {subreddit}\n' +
+                    '    - wb.listSubs\n' +
                     'Questions? Submit a PR and fix it yourself at https://github.com/traviscrowe/wombat```');
             }
         }
