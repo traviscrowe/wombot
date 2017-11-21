@@ -1,6 +1,5 @@
 function encodeForQs(str) {
-    return str.replace(/[^\w\d\s]/gi, '').replace(' ', '+')
-        .toLowerCase();
+    return str.replace(/[^\w\d\s]/gi, '').replace(' ', '+');
 }
 
 
