@@ -1,49 +1,46 @@
 const schedule = require('node-schedule');
-const defaults = require('./default.subs.json');
 const config = require('./config.json');
-const snoowrap = require('snoowrap');
+const Snoowrap = require('snoowrap');
+
 const storageKey = 'config.json';
 
-const r = new snoowrap(config.reddit);
+const r = new Snoowrap(config.reddit);
 
 const defaultScore = 1000;
 const cron = '*/5 * * * *';
 const addSubRegex = /(?:\wb\.addSub\s)(\w+)(?:\s)(\w+)/i;
 const listSubsRegex = /(?:\wb\.listSubs)/i;
 const removeSubRegex = /(?:\wb\.removeSub\s)(\w+)/i;
-const isReddit = /https\:\/\/www\.reddit\.com/i;
+const isReddit = /https:\/\/www\.reddit\.com/i;
 
-class RedditMessageHandler {
+class RedditClient {
     constructor() {
-        this.redditScheduler = new RedditScheduler();
+        this.posts = {};
     }
-    init(client, persistance) {
-        this.redditScheduler.init(client, persistance);
-    }
-
-    handleMessage(msg) {
-        if (addSubRegex.test(msg.content)) {
-            const match = addSubRegex.exec(msg.content);
-            const query = match[1];
-            const score = match[2];
-            this.redditScheduler.addSubscription(msg.channel, query, score);
-        }
-
-        if (listSubsRegex.test(msg.content)) {
-            const subs = this.redditScheduler.getSubscriptions(msg.channel);
-        }
-
-        if (removeSubRegex.test(msg.content)) {
-            const query = removeSubRegex.exec(msg.content)[1];
-            this.redditScheduler.removeSubscription(msg.channel, query);
-        }
+    getHotPosts(subreddit, score = defaultScore) {
+        return r.getHot(subreddit, { limit: 10 })
+            .filter(x => x.score > score)
+            .filter(x => !this.posts[x.id])
+            .map(x => ({
+                id: x.id,
+                title: x.title,
+                score: x.score,
+                preview: x.preview,
+                thumbnail: x.thumbnail,
+                permalink: x.permalink,
+                url: x.url
+            }))
+            .map((x) => {
+                this.posts[x.id] = x;
+                return x;
+            });
     }
 }
 
 class RedditScheduler {
     constructor() {
-        this.scheduledJob;
-        this.localClient;
+        this.scheduledJob = null;
+        this.localClient = null;
         this.subscriptions = {};
         this.redditClient = new RedditClient();
     }
@@ -65,17 +62,17 @@ class RedditScheduler {
         });
     }
 
-    getKey(channelName, subreddit) {
+    static getKey(channelName, subreddit) {
         return `${channelName}-${subreddit}`;
     }
 
     setSubscription(channel, channelName, subreddit, score, store = true) {
         const key = this.getKey(channelName, subreddit);
         this.subscriptions[key] = {
-            "channel": channel,
-            "channelName": channelName,
-            "subreddit": subreddit,
-            "score": score
+            channel,
+            channelName,
+            subreddit,
+            score
         };
         if (store) {
             this.saveSubscriptions();
@@ -83,12 +80,12 @@ class RedditScheduler {
     }
 
     saveSubscriptions() {
-        let subs = Object.keys(this.subscriptions).map(x => {
-            var sub = this.subscriptions[x];
+        const subs = Object.keys(this.subscriptions).map((x) => {
+            const sub = this.subscriptions[x];
             return {
-                "channelName" : sub.channelName,
-                "subreddit" : sub.subreddit,
-                "score" : sub.score
+                channelName: sub.channelName,
+                subreddit: sub.subreddit,
+                score: sub.score
             };
         });
         this.persistance.storeObject(storageKey, { subscriptions: subs }).catch(err => console.log(err));
@@ -99,18 +96,18 @@ class RedditScheduler {
         this.persistance = persistance;
         if (!this.scheduledJob) {
             this.scheduledJob = schedule.scheduleJob(cron, this.getPosts.bind(this));
-            this.persistance.getObject(storageKey).then(config => {
-                console.log('Saved subscriptions', config);
-                if (config && config.subscriptions) {
-                    config.subscriptions.forEach((sub) => {
-                        const channel = client.channels.filter(x => x.name == sub.channelName).first();
+            this.persistance.getObject(storageKey).then((c) => {
+                console.log('Saved subscriptions', c);
+                if (c && c.subscriptions) {
+                    c.subscriptions.forEach((sub) => {
+                        const channel = client.channels.filter(x => x.name === sub.channelName).first();
                         this.setSubscription(channel, sub.channelName, sub.subreddit, sub.score, false);
                     });
                     this.saveSubscriptions();
                     this.getPosts(false);
                 }
-            }).catch(err => {
-              console.log('No saved subscriptions found');  
+            }).catch(() => {
+                console.log('No saved subscriptions found');
             });
         }
     }
@@ -139,27 +136,30 @@ class RedditScheduler {
     }
 }
 
-class RedditClient {
+class RedditMessageHandler {
     constructor() {
-        this.posts = {};
+        this.redditScheduler = new RedditScheduler();
     }
-    getHotPosts(subreddit, score = defaultScore) {
-        return r.getHot(subreddit, { limit: 10 })
-            .filter(x => x.score > score)
-            .filter(x => !this.posts[x.id])
-            .map(x => ({
-                id: x.id,
-                title: x.title,
-                score: x.score,
-                preview: x.preview,
-                thumbnail: x.thumbnail,
-                permalink: x.permalink,
-                url: x.url
-            }))
-            .map((x) => {
-                this.posts[x.id] = x;
-                return x;
-            });
+    init(client, persistance) {
+        this.redditScheduler.init(client, persistance);
+    }
+
+    handleMessage(msg) {
+        if (addSubRegex.test(msg.content)) {
+            const match = addSubRegex.exec(msg.content);
+            const query = match[1];
+            const score = match[2];
+            this.redditScheduler.addSubscription(msg.channel, query, score);
+        }
+
+        if (listSubsRegex.test(msg.content)) {
+            this.redditScheduler.getSubscriptions(msg.channel);
+        }
+
+        if (removeSubRegex.test(msg.content)) {
+            const query = removeSubRegex.exec(msg.content)[1];
+            this.redditScheduler.removeSubscription(msg.channel, query);
+        }
     }
 }
 
