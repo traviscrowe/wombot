@@ -74,7 +74,7 @@ module.exports = {
             const tickers = msg.content.match(/(?:\$)(\w+)/g);
             if (tickers) {
                 tickers.forEach((ticker) => {
-                    const tickerQuery = util.encodeForQs(ticker.replace('$', ''));
+                    const tickerQuery = util.sanitizeTicker(ticker);
                     msg.channel.send(`https://finance.google.com/finance/getchart?q=${tickerQuery}`);
                 });
             }
