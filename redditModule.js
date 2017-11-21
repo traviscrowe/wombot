@@ -62,7 +62,7 @@ class RedditScheduler {
         });
     }
 
-    static getKey(channelName, subreddit) {
+    getKey(channelName, subreddit) {
         return `${channelName}-${subreddit}`;
     }
 
