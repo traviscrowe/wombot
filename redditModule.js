@@ -2,6 +2,7 @@ const schedule = require('node-schedule');
 const defaults = require('./default.subs.json');
 const config = require('./config.json');
 const snoowrap = require('snoowrap');
+const storageKey = 'config.json';
 
 const r = new snoowrap(config.reddit);
 
@@ -10,13 +11,14 @@ const cron = '*/5 * * * *';
 const addSubRegex = /(?:\wb\.addSub\s)(\w+)(?:\s)(\w+)/i;
 const listSubsRegex = /(?:\wb\.listSubs)/i;
 const removeSubRegex = /(?:\wb\.removeSub\s)(\w+)/i;
+const isReddit = /https\:\/\/www\.reddit\.com/i;
 
 class RedditMessageHandler {
     constructor() {
         this.redditScheduler = new RedditScheduler();
     }
-    init(client) {
-        this.redditScheduler.init(client);
+    init(client, persistance) {
+        this.redditScheduler.init(client, persistance);
     }
 
     handleMessage(msg) {
@@ -51,43 +53,70 @@ class RedditScheduler {
             const sub = this.subscriptions[key];
             this.redditClient.getHotPosts(sub.subreddit, sub.score).then((posts) => {
                 posts.forEach((post) => {
-                    if (postToChannel) {
-                        sub.channel.send(`${post.title}\nhttp://reddit.com${post.permalink}`);
+                    if (postToChannel && sub.channel) {
+                        if (isReddit.test(post.url)) {
+                            sub.channel.send(`http://reddit.com${post.permalink}`);
+                        } else {
+                            sub.channel.send(`${post.title}\n${post.url}`);
+                        }
                     }
                 });
             });
         });
     }
 
-    getKey(channel, subreddit) {
-        return `${channel.name}-${subreddit}`;
+    getKey(channelName, subreddit) {
+        return `${channelName}-${subreddit}`;
     }
 
-    setSubscription(channel, subreddit, score) {
-        const key = this.getKey(channel, subreddit);
+    setSubscription(channel, channelName, subreddit, score, store = true) {
+        const key = this.getKey(channelName, subreddit);
         this.subscriptions[key] = {
-            channel,
-            subreddit,
-            score
+            "channel": channel,
+            "channelName": channelName,
+            "subreddit": subreddit,
+            "score": score
         };
+        if (store) {
+            this.saveSubscriptions();
+        }
     }
 
-    init(client) {
+    saveSubscriptions() {
+        let subs = Object.keys(this.subscriptions).map(x => {
+            var sub = this.subscriptions[x];
+            return {
+                "channelName" : sub.channelName,
+                "subreddit" : sub.subreddit,
+                "score" : sub.score
+            };
+        });
+        this.persistance.storeObject(storageKey, { subscriptions: subs }).catch(err => console.log(err));
+    }
+
+    init(client, persistance) {
         this.localClient = client;
+        this.persistance = persistance;
         if (!this.scheduledJob) {
             this.scheduledJob = schedule.scheduleJob(cron, this.getPosts.bind(this));
-            defaults.forEach((sub) => {
-                const channel = client.channels.filter(x => x.name == sub.channelName).first();
-                if (channel) {
-                    this.setSubscription(channel, sub.subreddit, sub.score);
+            this.persistance.getObject(storageKey).then(config => {
+                console.log('Saved subscriptions', config);
+                if (config && config.subscriptions) {
+                    config.subscriptions.forEach((sub) => {
+                        const channel = client.channels.filter(x => x.name == sub.channelName).first();
+                        this.setSubscription(channel, sub.channelName, sub.subreddit, sub.score, false);
+                    });
+                    this.saveSubscriptions();
+                    this.getPosts(false);
                 }
+            }).catch(err => {
+              console.log('No saved subscriptions found');  
             });
-            this.getPosts(false);
         }
     }
 
     addSubscription(channel, subreddit, score) {
-        this.setSubscription(channel, subreddit, score);
+        this.setSubscription(channel, channel.name, subreddit, score);
         this.getPosts();
     }
 
