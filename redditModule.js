@@ -131,8 +131,9 @@ class RedditScheduler {
     }
 
     removeSubscription(channel, subreddit) {
-        const key = this.getKey(channel, subreddit);
+        const key = this.getKey(channel.name, subreddit);
         delete this.subscriptions[key];
+        channel.send(`r/${subreddit} has been removed`, { code: true });
     }
 }
 
