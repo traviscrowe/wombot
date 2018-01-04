@@ -5,16 +5,20 @@
   "main": "bot.js",
   "scripts": {
     "test": "mocha",
-    "start": "node bot.js",
+    "start": "nodemon bot.js",
+    "create-config": "node setup-config.js",
     "lint": "eslint ./",
     "lint:fix": "eslint --fix ./"
   },
   "author": "Travis Crowe",
   "license": "ISC",
   "dependencies": {
+    "aws-sdk": "^2.153.0",
     "beeradvocate-api": "^0.0.1",
     "bgg": "^1.0.1",
-    "discord.js": "^11.2.1"
+    "discord.js": "^11.2.1",
+    "node-schedule": "^1.2.5",
+    "snoowrap": "^1.14.2"
   },
   "devDependencies": {
     "chai": "^4.1.2",

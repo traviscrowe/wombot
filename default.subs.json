@@ -1,0 +1,29 @@
+{
+  "subscriptions": [
+    {
+      "channelName": "video-games",
+      "subreddit": "gaming",
+      "score": 10000 
+    },
+    {
+      "channelName": "memes",
+      "subreddit": "dankmemes",
+      "score": 5000 
+    },
+    {
+      "channelName": "board-games",
+      "subreddit": "boardgames",
+      "score": 250
+    },
+    {
+      "channelName": "board-games",
+      "subreddit": "boardgamedeals",
+      "score": 20
+    },
+    {
+      "channelName": "game-deals",
+      "subreddit": "gamedeals",
+      "score": 1000
+    }
+  ]
+}
