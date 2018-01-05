@@ -8,7 +8,7 @@ const client = new Discord.Client();
 
 client.on('ready', () => {
     p.init('wombot-config').then(() => {
-        const wombot = client.channels.find('name', 'wombot-testing');
+        const wombot = client.channels.find('name', 'wombot');
         if (wombot) {
             wombot.send('*wombat noises* [wombot started]');
         }
