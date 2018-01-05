@@ -118,7 +118,7 @@ module.exports = {
                 '    - wb.addSub {subredditname} {score} (ws.addSub gaming 10000)\n' +
                 '    - wb.removeSub {subreddit}\n' +
                 '    - wb.listSubs\n' +
-                'Questions? Submit a PR and fix it yourself at https://github.com/traviscrowe/wombat```');
+                'Questions? Submit a PR and fix it yourself at https://github.com/traviscrowe/wombot```');
         }
     }
 };
