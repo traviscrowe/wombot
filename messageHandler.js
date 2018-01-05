@@ -116,6 +116,7 @@ module.exports = {
                 '    - {{BoardGameTitle}} in messages will return a bunch of information about and a link to the best match of BoardGameTitle on BoardGameGeek\n\n' +
                 '#subreddit-watcher: watches a specified subreddit and auto-posts when anything reaches specified score\n\n' +
                 '    - wb.addSub {subredditname} {score} (ws.addSub gaming 10000)\n' +
+                '    - use .beer name of beer to get beeradvocate.com links\n\n' +
                 '    - wb.removeSub {subreddit}\n' +
                 '    - wb.listSubs\n' +
                 'Questions? Submit a PR and fix it yourself at https://github.com/traviscrowe/wombot```');
