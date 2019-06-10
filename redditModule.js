@@ -1,6 +1,7 @@
 const schedule = require('node-schedule');
 const config = require('./config.json');
 const Snoowrap = require('snoowrap');
+const NodeCache = require('node-cache');
 
 const storageKey = 'config.json';
 
@@ -15,12 +16,12 @@ const isReddit = /https:\/\/www\.reddit\.com/i;
 
 class RedditClient {
     constructor() {
-        this.posts = {};
+        this.postsCache = new NodeCache({ stdTTL: 36000, checkperiod: 600 } );
     }
     getHotPosts(subreddit, score = defaultScore) {
         return r.getHot(subreddit, { limit: 10 })
             .filter(x => x.score > score)
-            .filter(x => !this.posts[x.id])
+            .filter(x => !this.postsCache.get(x.id))
             .map(x => ({
                 id: x.id,
                 title: x.title,
@@ -31,7 +32,7 @@ class RedditClient {
                 url: x.url
             }))
             .map((x) => {
-                this.posts[x.id] = x;
+                this.postsCache.set(x.id, x);
                 return x;
             });
     }
@@ -76,6 +77,8 @@ class RedditScheduler {
         };
         if (store) {
             this.saveSubscriptions();
+            channel.send(`r/${subreddit} (${score}) has been added`, { code: true });
+
         }
     }
 
