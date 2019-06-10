@@ -17,6 +17,7 @@
     "beeradvocate-api": "^0.0.1",
     "bgg": "^1.0.1",
     "discord.js": "^11.2.1",
+    "node-cache": "^4.2.0",
     "node-schedule": "^1.2.5",
     "snoowrap": "^1.14.2"
   },
